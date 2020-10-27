@@ -17,11 +17,11 @@ public class VEBTree {
 	public VEBTree(int u) {
 		
 		if(u <= 0)
-			throw new IllegalArgumentException("VEBTree universe must be of at least size 1.");
+			throw new IllegalArgumentException("VEBTree universe must be at least of size 1.");
 		
 		w = 32 - Integer.numberOfLeadingZeros(u - 1); // ceil(log2(u))
 		
-		if(w > 1)
+		if(w > 0)
 			cluster = new Hashtable<>(w);
 		
 	}
@@ -31,19 +31,19 @@ public class VEBTree {
 	 * @param x The queried integer.
 	 * @return Whether x is in the set or not.
 	 */
-	public boolean member(int x) {
+	public boolean contains(int x) {
 		
 		if(min == null)
 			return false;
 		if(x == min || x == max)
 			return true;
-		if(w == 1)
+		if(w == 0)
 			return false;
 		
 		int c = high(x);
 		int i = low(x);
-		if(cluster.contains(c))
-			return cluster.get(c).member(i);
+		if(cluster.containsKey(c))
+			return cluster.get(c).contains(i);
 		return false;
 		
 	}
@@ -60,7 +60,7 @@ public class VEBTree {
 		int c = high(x);
 		int i = low(x);
 		
-		Integer minLow = cluster.contains(c) ? cluster.get(c).min : null;
+		Integer minLow = cluster.containsKey(c) ? cluster.get(c).min : null;
 		if(minLow != null && i > minLow)
 			return append(c, cluster.get(c).predecessor(i));
 		
@@ -84,7 +84,7 @@ public class VEBTree {
 		int c = high(x);
 		int i = low(x);
 		
-		Integer maxLow = cluster.contains(c) ? cluster.get(c).max : null;
+		Integer maxLow = cluster.containsKey(c) ? cluster.get(c).max : null;
 		if(maxLow != null && i < maxLow)
 			return append(c, cluster.get(c).successor(i));
 		
@@ -94,8 +94,6 @@ public class VEBTree {
 	}
 	
 	public void insert(int x) {
-		
-		System.out.println("Inserting " + x + " into tree with w = " + w);
 		
 		if(min == null) {
 			min = x;
@@ -115,11 +113,12 @@ public class VEBTree {
 		int c = high(x);
 		int i = low(x);
 		
-		if(!cluster.contains(c)) {
-			cluster.put(c, new VEBTree(1 << (w >> 1)));
-			if (summary == null)
-				summary = new VEBTree(1 << (w >> 1));
-			summary.insert(c);
+		if(!cluster.containsKey(c)) {
+			cluster.put(c, new VEBTree(1 << ((w + 1) >> 1)));
+			if(summary == null)
+				summary = new VEBTree(1 << ((w + 1) >> 1));
+			if(!summary.contains(c))
+				summary.insert(c);
 		}
 		
 		cluster.get(c).insert(i);
@@ -172,6 +171,10 @@ public class VEBTree {
 	
 	private int append(int high, int low) {
 		return high << (w >> 1) | low;
+	}
+	
+	public static void main(String[] args) {
+	
 	}
 
 }
