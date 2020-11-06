@@ -2,7 +2,7 @@ import java.util.Hashtable;
 
 public class VEBTree {
 	
-	private int w;
+	private int u, w;
 	
 	private Integer min;
 	private Integer max;
@@ -17,8 +17,9 @@ public class VEBTree {
 	public VEBTree(int u) {
 		
 		if(u <= 0)
-			throw new IllegalArgumentException("VEBTree universe must be at least of size 1.");
+			throw new IllegalArgumentException("Universe size must be at least 1.");
 		
+		this.u = u;
 		w = 32 - Integer.numberOfLeadingZeros(u - 1); // ceil(log2(u))
 		
 		if(w > 0)
@@ -27,7 +28,7 @@ public class VEBTree {
 	}
 	
 	/**
-	 * Determine whether a given int x is a member of the set represented by the VEBTree.
+	 * Determine whether a given int x is a member of the set.
 	 * @param x The queried integer.
 	 * @return Whether x is in the set or not.
 	 */
@@ -48,6 +49,11 @@ public class VEBTree {
 		
 	}
 	
+	/**
+	 * Determine the preceding element of the set relative to a given value.
+	 * @param x The value whose predecessor is to be returned.
+	 * @return The element contained in the set which precedes x.
+	 */
 	public Integer predecessor(int x) {
 		
 		if(min == null)
@@ -72,6 +78,11 @@ public class VEBTree {
 		
 	}
 	
+	/**
+	 * Determine the succeeding element of the set relative to a given value.
+	 * @param x The value whose successor is to be returned.
+	 * @return The element contained in the set which succeeds x.
+	 */
 	public Integer successor(int x) {
 		
 		if(min == null)
@@ -95,16 +106,17 @@ public class VEBTree {
 	
 	public void insert(int x) {
 		
-		if(x >= 1 << w)
-			throw new IllegalArgumentException("Values inserted must be less than U");
-		if(x < 0)
-			throw new IllegalArgumentException("Values inserted must be greater than 0");
+		if(x >= u || x < 0)
+			throw new IllegalArgumentException("Values inserted must be within [0, " + u + ").");
 		
 		if(min == null) {
 			min = x;
 			max = x;
 			return;
 		}
+		
+		if(x == min)
+			throw new IllegalArgumentException("The value " + x + " was already part of the VEBTree and so could not be inserted.");
 		
 		if(x < min) {
 			int temp = x;
@@ -146,9 +158,8 @@ public class VEBTree {
 		int c = high(x);
 		int i = low(x);
 		
-		// Under the following condition, the value x passed to delete was not part of the set.
 		if(cluster.get(c) == null)
-			return;
+			throw new IllegalArgumentException("The value " + x + " was not part of the VEBTree and so could not be deleted.");
 		
 		cluster.get(c).delete(i);
 		if(cluster.get(c).min == null) {

@@ -21,14 +21,17 @@ public class VEBTreeTest {
 	@Test
 	public void testInsertionExceptions() {
 		
-		VEBTree tree1 = new VEBTree(64);
+		VEBTree tree = new VEBTree(64);
 		
-		assertThrows(IllegalArgumentException.class, () -> tree1.insert(64));
-		assertThrows(IllegalArgumentException.class, () -> tree1.insert(222));
-		assertThrows(IllegalArgumentException.class, () -> tree1.insert(-12));
-		assertThrows(IllegalArgumentException.class, () -> tree1.insert(-1));
-		assertThrows(IllegalArgumentException.class, () -> tree1.insert(Integer.MAX_VALUE));
-		assertThrows(IllegalArgumentException.class, () -> tree1.insert(Integer.MIN_VALUE));
+		assertThrows(IllegalArgumentException.class, () -> tree.insert(64));
+		assertThrows(IllegalArgumentException.class, () -> tree.insert(222));
+		assertThrows(IllegalArgumentException.class, () -> tree.insert(-12));
+		assertThrows(IllegalArgumentException.class, () -> tree.insert(-1));
+		assertThrows(IllegalArgumentException.class, () -> tree.insert(Integer.MAX_VALUE));
+		assertThrows(IllegalArgumentException.class, () -> tree.insert(Integer.MIN_VALUE));
+		
+		tree.insert(5);
+		assertThrows(IllegalArgumentException.class, () -> tree.insert(5));
 		
 	}
 	
@@ -82,9 +85,62 @@ public class VEBTreeTest {
 	}
 	
 	@Test
-	public void testDeletion() {
+	public void testDeletionSimple() {
 	
+		VEBTree tree = new VEBTree(45);
+		
+		tree.insert(12);
+		assertTrue(tree.contains(12));
+		tree.delete(12);
+		assertFalse(tree.contains(12));
+		
+		tree.insert(12);
+		tree.insert(14);
+		assertTrue(tree.contains(12));
+		assertFalse(tree.contains(13));
+		assertTrue(tree.contains(14));
+		
+		assertThrows(IllegalArgumentException.class, () -> tree.delete(16));
 	
+	}
+	
+	@Test
+	public void testDeletionSuccessive() {
+		
+		VEBTree tree = new VEBTree(64);
+		
+		for(int i = 0; i < 16; i++) {
+			tree.insert(4 * i);
+		}
+		for(int i = 0; i < 16; i++) {
+			tree.delete(4 * i);
+			assertFalse(tree.contains(4 * i));
+		}
+	
+	}
+	
+	@Test
+	public void testDeletionReverse() {
+		
+		VEBTree tree = new VEBTree(64);
+		
+		for(int i = 15; i >= 0; i--) {
+			tree.insert(4 * i);
+		}
+		for(int i = 15; i >= 0; i--) {
+			tree.delete(4 * i);
+			assertFalse(tree.contains(4 * i));
+		}
+		
+	}
+	
+	@Test
+	public void testPredecessorSort() {
+	
+	}
+	
+	@Test
+	public void testSuccessorSort() {
 	
 	}
 
