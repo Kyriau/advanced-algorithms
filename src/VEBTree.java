@@ -95,6 +95,11 @@ public class VEBTree {
 	
 	public void insert(int x) {
 		
+		if(x >= 1 << w)
+			throw new IllegalArgumentException("Values inserted must be less than U");
+		if(x < 0)
+			throw new IllegalArgumentException("Values inserted must be greater than 0");
+		
 		if(min == null) {
 			min = x;
 			max = x;
@@ -141,7 +146,7 @@ public class VEBTree {
 		int c = high(x);
 		int i = low(x);
 		
-		// This is the condition in which we deleted an element which does not exist.
+		// Under the following condition, the value x passed to delete was not part of the set.
 		if(cluster.get(c) == null)
 			return;
 		
@@ -171,10 +176,6 @@ public class VEBTree {
 	
 	private int append(int high, int low) {
 		return high << (w >> 1) | low;
-	}
-	
-	public static void main(String[] args) {
-	
 	}
 
 }
