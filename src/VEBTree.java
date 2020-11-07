@@ -3,12 +3,34 @@ import java.util.Random;
 
 public class VEBTree {
 	
-	private int u, w;
+	/**
+	 * The universe size of the VEBTree. All values stored must be within [0, U).
+	 */
+	private int u;
 	
+	/**
+	 * This value is equal to ceil(log2(U)). It is more convenient to use in internal operations than U.
+	 */
+	private int w;
+	
+	/**
+	 * The minimum value stored in the VEBTree. It is unique in that this is the only place in the tree where this value is stored.
+	 */
 	private Integer min;
+	
+	/**
+	 * The maximum value stored in the VEBTree. It is stored only to improve computational time of the successor function.
+	 */
 	private Integer max;
 	
+	/**
+	 * This subtree keeps track of which entries of the hashtable are nonempty.
+	 */
 	private VEBTree summary;
+	
+	/**
+	 * This hashtable of subtrees stores values which are within the set. The high-order bits become the key for the hashtable, and the low-order bits become the value stored.
+	 */
 	private Hashtable<Integer, VEBTree> cluster;
 	
 	/**
@@ -21,11 +43,23 @@ public class VEBTree {
 			throw new IllegalArgumentException("Universe size must be at least 1.");
 		
 		this.u = u;
-		w = 32 - Integer.numberOfLeadingZeros(u - 1); // ceil(log2(u))
 		
+		// ceil(log2(u)), see documentation for numberOfLeadingZeros
+		w = 32 - Integer.numberOfLeadingZeros(u - 1);
+		
+		// If w = 0, we don't need any more storage than just min.
+		// Using w for the initial size of the hashtable is a wild guess.
 		if(w > 0)
 			cluster = new Hashtable<>(w);
 		
+	}
+	
+	/**
+	 * Get the universe size of this VEBTree, defined at construction.
+	 * @return The universe size U.
+	 */
+	public int getU() {
+		return u;
 	}
 	
 	/**
@@ -35,8 +69,10 @@ public class VEBTree {
 	 */
 	public boolean contains(int x) {
 		
+		// If min is null, then the set is empty.
 		if(min == null)
 			return false;
+		
 		if(x == min || x == max)
 			return true;
 		if(w == 0)
@@ -44,8 +80,12 @@ public class VEBTree {
 		
 		int c = high(x);
 		int i = low(x);
+		
+		// If the cluster has the relevant values, then we need to recurse.
 		if(cluster.containsKey(c))
 			return cluster.get(c).contains(i);
+		
+		// Otherwise, we definitely don't contain the value.
 		return false;
 		
 	}
@@ -105,6 +145,10 @@ public class VEBTree {
 		
 	}
 	
+	/**
+	 * Insert a value into the set represented by the VEBTree.
+	 * @param x The new value to insert.
+	 */
 	public void insert(int x) {
 		
 		if(x >= u || x < 0)
@@ -143,6 +187,10 @@ public class VEBTree {
 		
 	}
 	
+	/**
+	 * Remove a value from the set represented by the VEBTree.
+	 * @param x The value to remove.
+	 */
 	public void delete(int x) {
 	
 		if(x == min && x == max) {
