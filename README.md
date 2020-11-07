@@ -1,2 +1,2 @@
 # advanced-algorithms
-Implementations from MIT COMPSCI 224 videos.
+Implementations from Harvard COMPSCI 224 videos.
