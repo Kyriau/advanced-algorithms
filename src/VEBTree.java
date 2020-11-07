@@ -1,4 +1,5 @@
 import java.util.Hashtable;
+import java.util.Random;
 
 public class VEBTree {
 	
