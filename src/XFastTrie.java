@@ -43,16 +43,20 @@ public class XFastTrie {
 	
 	}
 	
+	private int leaf(int index) {
+	
+	}
+	
 	private int ancestor(int index, int k) {
-		return index >> k;
+		return (index - 1) >> k;
 	}
 	
 	private int leftChild(int index) {
-		return index << 1;
+		return (index << 1) + 1;
 	}
 	
 	private int rightChild(int index) {
-		return (index << 1) + 1;
+		return (index << 1) + 2;
 	}
 	
 	private static class IntegerNode {
