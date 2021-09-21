@@ -9,7 +9,7 @@ public class XFastTrie {
 		if(size > Integer.MAX_VALUE >> 1 || size <= 0)
 			throw new IllegalArgumentException("Cannot create x-fast trie of size " + size + ".");
 		
-		onesTrie = new Hashtable<>(size << 1);
+		onesTrie = new Hashtable<>();
 		
 	}
 	
@@ -43,12 +43,8 @@ public class XFastTrie {
 	
 	}
 	
-	private int leaf(int index) {
-	
-	}
-	
 	private int ancestor(int index, int k) {
-		return (index - 1) >> k;
+		return ((index + 1) >> k) - 1;
 	}
 	
 	private int leftChild(int index) {
