@@ -132,7 +132,7 @@ public class SplayTree<E extends Comparable<E>> {
 			
 			if(n.parent.parent == null) {
 				
-				if(n.parent.left == n)
+				if(n == n.parent.left)
 					rightRotate(n.parent);
 				else
 					leftRotate(n.parent);
@@ -163,7 +163,7 @@ public class SplayTree<E extends Comparable<E>> {
 			n1.right = n2.left;
 			if(n2.left != null)
 				n2.left.parent = n1;
-			n2.parent = n1;
+			n2.parent = n1.parent;
 		}
 		
 		if(n1.parent == null)
@@ -187,7 +187,7 @@ public class SplayTree<E extends Comparable<E>> {
 			n1.left = n2.right;
 			if(n2.right != null)
 				n2.right.parent = n1;
-			n2.parent = n1;
+			n2.parent = n1.parent;
 		}
 		
 		if(n1.parent == null)
