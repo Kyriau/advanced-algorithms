@@ -22,7 +22,7 @@ public class XFastTrie {
 		if(onesTrie.containsKey(value))
 			return onesTrie.get(value).predecessor.value;
 		
-		
+		return 0;
 			
 	}
 	
@@ -31,7 +31,7 @@ public class XFastTrie {
 		if(onesTrie.containsKey(value))
 			return onesTrie.get(value).successor.value;
 		
-		
+		return 0;
 		
 	}
 	
